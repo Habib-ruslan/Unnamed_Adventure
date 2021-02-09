@@ -1,0 +1,141 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class Tank : Player
+{
+    [Header("Атака")]
+    protected float damage;
+    public float AttackBooster;
+    public float CriticalChance;
+    public Transform[] attackPos;
+    public float attackRadius;
+    public LayerMask[] Target;
+    public GameObject[] damageParticale;
+
+    private float DownMove;              //Начальная гравитация
+    public float TimeMoveSkill;  
+    public float GravityPower;           //Конечная гравитация
+    public float knockDamage;
+    public float knockPow;
+    public float knockRadius;
+    public float knockTime;
+
+    [Header("Передвижение (танк)")]
+    public float slow_boost;
+
+    void Awake()
+    {
+        Find();
+        skill[2].Timer = TimeMoveSkill;
+    }
+
+    void Start()
+    {
+        rb = GetComponent<Rigidbody2D>();
+        anim = GetComponent<Animator>();
+        DownMove = rb.gravityScale;
+        hp = Maxhp;
+    }
+
+    void Update()
+    {
+        if (!Stun)
+        {
+            Jump();
+            Run();
+            if (CanJump)
+            {
+                if (Input.GetKey(KeyCode.X))
+                {
+                    anim.SetBool("Attack", true);
+                }
+                else if(Input.GetKeyDown(KeyCode.C) || ((Input.GetKeyDown(KeyCode.Space) && !OnGround)))
+                {
+                    StartCoroutine(Gravity());
+                }
+                else if(Input.GetKeyDown(KeyCode.LeftShift))    {Block(true);}
+            }
+            else if (Input.GetKeyUp(KeyCode.LeftShift)) {Block(false);}
+        }
+        else
+        {
+            anim.SetBool("run", false);
+            anim.SetBool("Attack", false);
+            //anim.SetBool("OnAir", false);
+        }
+    }
+    void Attack()
+    {
+        skill[0].image.fillAmount = 0;
+        if (Random.Range(0,100) <= CriticalChance)  {damage = Damage * AttackBooster;}
+        else damage = Damage;
+        Collider2D[] en = Physics2D.OverlapCircleAll(attackPos[0].position, attackRadius, Target[0]);
+        Collider2D[] box = Physics2D.OverlapCircleAll(attackPos[0].position, attackRadius, Target[1]);
+        Collider2D[] bomb = Physics2D.OverlapCircleAll(attackPos[0].position, attackRadius, Target[2]);
+        for (int i=0; i<en.Length; i++)
+        {
+            en[i].GetComponent<Mob>().TakeDamage(damage, damageParticale[0]);
+        }
+        for (int i = 0; i < box.Length; i++)
+        {
+            box[i].GetComponent<Boxes>().DestroyOther();
+        }
+        for (int i = 0; i < bomb.Length; i++)
+        {
+            bomb[i].GetComponent<Bombs>().Boom();
+        }
+        anim.SetBool("Attack", false);
+    }
+    void Block(bool On)
+    {
+        if (On)
+        {
+            skill[1].image.color = new Color (1f,1f,1f,0f);
+            BlockChance *= 10;
+            speed /= slow_boost;
+            CanJump = false;
+        }
+        else
+        {
+            skill[1].image.color = new Color (1f,1f,1f,1f);
+            skill[1].image.fillAmount = 0;
+            BlockChance /=10;
+            speed *=slow_boost;
+            CanJump = true;
+        }
+    }
+    void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(attackPos[0].position , attackRadius);
+        Gizmos.DrawWireSphere(attackPos[1].position , knockRadius);
+        Gizmos.color = Color.blue;
+        Gizmos.DrawWireSphere(groundCheck.position, checkRadius);
+    }
+    IEnumerator Gravity()
+    {
+        anim.SetBool("Gravity", true);
+        skill[2].image.fillAmount = 0;
+        rb.gravityScale = GravityPower;
+        Collider2D[] en = Physics2D.OverlapCircleAll(attackPos[1].position, knockRadius, Target[0]);
+        Collider2D[] box = Physics2D.OverlapCircleAll(attackPos[1].position, attackRadius, Target[1]);
+        Collider2D[] bomb = Physics2D.OverlapCircleAll(attackPos[1].position, attackRadius, Target[2]);
+        for (int i=0; i < en.Length; i++)
+        {
+            en[i].GetComponent<Mob>().KnockBack(knockPow,knockTime,knockDamage, damageParticale[0]);
+        }
+        for (int i=0; i<box.Length; i++)
+        {
+            box[i].GetComponent<Boxes>().DestroyOther();
+        }
+        for (int i=0; i<bomb.Length; i++)
+        {
+            bomb[i].GetComponent<Bombs>().Boom();
+        }
+        yield return new WaitForSeconds(TimeMoveSkill);
+        Instantiate(damageParticale[1], groundCheck.position, Quaternion.identity);
+        rb.gravityScale = DownMove;
+        anim.SetBool("Gravity", false);
+    }
+}
