@@ -21,13 +21,23 @@ public class Tank : Player
     public float knockRadius;
     public float knockTime;
 
+    int EquipWeapon;
+    string UnlockWeapons;
+
+
     [Header("Передвижение (танк)")]
     public float slow_boost;
 
     void Awake()
     {
         Find();
-        skill[2].Timer = TimeMoveSkill;
+
+        PlayerPrefs.SetString("UnlockWeapons","10");
+        PlayerPrefs.SetInt("Equip", 0);
+        UnlockWeapons = PlayerPrefs.GetString("UnlockWeapons");
+        EquipWeapon = PlayerPrefs.GetInt("Equip");
+        print(UnlockWeapons);
+        print("Оружие "+ EquipWeapon + " Экипировано");
     }
 
     void Start()
@@ -36,6 +46,9 @@ public class Tank : Player
         anim = GetComponent<Animator>();
         DownMove = rb.gravityScale;
         hp = Maxhp;
+        hd.EditTime(2, TimeMoveSkill);
+        hd.EditTime(0, Skill_Time[0]);
+        hd.EditTime(1, Skill_Time[1]);
     }
 
     void Update()
@@ -55,6 +68,15 @@ public class Tank : Player
                     StartCoroutine(Gravity());
                 }
                 else if(Input.GetKeyDown(KeyCode.LeftShift))    {Block(true);}
+
+                else if(Input.GetKeyDown(KeyCode.R))
+                {
+                    PlayerPrefs.SetString("UnlockWeapons", "10");
+                }
+                else if(Input.GetKeyDown(KeyCode.I))
+                {
+                    Inventory.GetComponent<GUI>().Active();
+                }
             }
             else if (Input.GetKeyUp(KeyCode.LeftShift)) {Block(false);}
         }
@@ -67,7 +89,7 @@ public class Tank : Player
     }
     void Attack()
     {
-        skill[0].image.fillAmount = 0;
+        hd.Zero(0);
         if (Random.Range(0,100) <= CriticalChance)  {damage = Damage * AttackBooster;}
         else damage = Damage;
         Collider2D[] en = Physics2D.OverlapCircleAll(attackPos[0].position, attackRadius, Target[0]);
@@ -91,15 +113,15 @@ public class Tank : Player
     {
         if (On)
         {
-            skill[1].image.color = new Color (1f,1f,1f,0f);
+            hd.EditColor(1,new Color (1f,1f,1f,0f));
             BlockChance *= 10;
             speed /= slow_boost;
             CanJump = false;
         }
         else
         {
-            skill[1].image.color = new Color (1f,1f,1f,1f);
-            skill[1].image.fillAmount = 0;
+            hd.EditColor(1,new Color (1f,1f,1f,1f));
+            hd.Zero(1);
             BlockChance /=10;
             speed *=slow_boost;
             CanJump = true;
@@ -116,7 +138,7 @@ public class Tank : Player
     IEnumerator Gravity()
     {
         anim.SetBool("Gravity", true);
-        skill[2].image.fillAmount = 0;
+        hd.Zero(2);
         rb.gravityScale = GravityPower;
         Collider2D[] en = Physics2D.OverlapCircleAll(attackPos[1].position, knockRadius, Target[0]);
         Collider2D[] box = Physics2D.OverlapCircleAll(attackPos[1].position, attackRadius, Target[1]);

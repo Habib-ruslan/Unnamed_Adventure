@@ -19,6 +19,8 @@ struct weapons
     }
 public class Warrior : Player
 {
+    string UnlockWeapons;
+    int EquipWeapon;
     public LayerMask[] Target;
     public Transform[] attackPos;
     protected float damage;
@@ -37,29 +39,29 @@ public class Warrior : Player
 
     void Awake()
     {
+        PlayerPrefs.SetString("UnlockWeapons","10000");
+        PlayerPrefs.SetInt("Equip", 0);
+        UnlockWeapons = PlayerPrefs.GetString("UnlockWeapons");
+        EquipWeapon = PlayerPrefs.GetInt("Equip");
+        print(UnlockWeapons);
+        print("Оружие "+ EquipWeapon + " Экипировано");
         Find();
-        Weapons = new weapons[13]{
+        Weapons = new weapons[5]{
             new weapons(4f, 1.7f, 5f, 1.5f, 1f, 2),
-            new weapons(4f, 1.7f, 5f, 1.5f, 1f, 2),
-            new weapons(8f, 2.3f, 10f, 1.5f, 0.75f, 3),
-            new weapons(9f, 2.3f, 10f, 1.5f, 0.75f, 3),
-            new weapons(4f, 1.7f, 15f, 1.3f, 1.2f, 1),
-            new weapons(5f, 1.5f, 4f, 2f, 1.2f, 1),
-            new weapons(6f, 2f, 3f, 3f, 1.8f, 4),
-            new weapons(6f, 2f, 3f, 3f, 1.8f, 4),
-            new weapons(3f, 1.9f, 8f, 2.2f, 1.4f, 6),
-            new weapons(3f, 1.9f, 8f, 2.2f, 1.4f, 6),
-            new weapons(12f, 1.8f, 1f, 1.2f, 1.2f, 2),
-            new weapons(12f, 1.8f, 1f, 1.2f, 1.2f, 2),
-            new weapons(5f, 1.5f, 4f, 2f, 1.2f, 1)
+            new weapons(6f, 2.3f, 10f, 1.5f, 0.75f, 3),
+            new weapons(10f, 2.3f, 1f, 1.3f, 0.75f, 1),
+            new weapons(3f, 2f, 2.0f, 3f, 3.0f, 5),
+            new weapons(3f, 3.2f, 8f, 2.2f, 1.4f, 6)
         };
-        skill[2].Timer = 1f;
     } 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         hp = Maxhp;
+        hd.EditTime(2, 1f);
+        hd.EditTime(0, Skill_Time[0]);
+        hd.EditTime(1, Skill_Time[1]);
     }
 
     void Update()
@@ -72,13 +74,13 @@ public class Warrior : Player
             {
                 anim.SetBool("Attack", true);
             }
-            else if(Input.GetKeyDown(KeyCode.G))
+            else if(Input.GetKeyDown(KeyCode.R))
             {
-                if (n + 1< skins.Length)
-                    n++;
-                else
-                    n = 0;
-                sword.GetComponent<SpriteRenderer>().sprite = skins[n];
+                PlayerPrefs.SetString("UnlockWeapons", "10000");
+            }
+            else if(Input.GetKeyDown(KeyCode.I))
+            {
+                Inventory.GetComponent<GUI>().Active();
             }
             if (!OnGround) anim.SetBool("OnAir", true);
             else anim.SetBool("OnAir", false);
@@ -109,7 +111,7 @@ public class Warrior : Player
         {
             if(Input.GetKey(KeyCode.LeftShift) && Spurt_Ready)
             {
-                skill[1].image.fillAmount = 0;
+                hd.Zero(1);
                 rb.velocity = new Vector2(spurt_forward *Input.GetAxis("Horizontal"), rb.velocity.y);
                 StartCoroutine(Spurt_Forward());
             }
@@ -125,7 +127,7 @@ public class Warrior : Player
     }
     void Attack()
     {
-        skill[0].image.fillAmount = 0;
+        hd.Zero(0);
         if (Random.Range(0,100) <= Weapons[n].CriticalChance)  {damage = Weapons[n].damage * Weapons[n].CriticalDamage +Random.Range(0,Weapons[n].MaxDamage);}
         else damage = Weapons[n].damage + Random.Range(0, Weapons[n].MaxDamage);
         Collider2D[] en = Physics2D.OverlapCircleAll(attackPos[0].position, Weapons[n].Radius, Target[0]);
@@ -166,6 +168,13 @@ public class Warrior : Player
             stay = false;
         }
     }
+
+    public override void Equip(int num)
+    {
+        n =(short) num;
+        int h = (n!=0)? h=2*n : h=0;;
+        sword.GetComponent<SpriteRenderer>().sprite = skins[h];
+    }
     
     IEnumerator Spurt_Forward()
     {
@@ -174,5 +183,4 @@ public class Warrior : Player
         yield return new WaitForSeconds(1f);
         Spurt_Ready = true;
     }
-    
 }

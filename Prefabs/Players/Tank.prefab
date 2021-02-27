@@ -816,14 +816,11 @@ MonoBehaviour:
   money: 0
   _attack: {fileID: 0}
   _sprite: {fileID: 6455090601222902255, guid: 81b9fdf80c35a3a48aa062eb4665b693, type: 3}
+  MyClass: Tank
   money_Txt: {fileID: 0}
   UI_Message:
   - {fileID: 1126118824715314684, guid: 0716f5fe998a8a24c94452520f76a4a1, type: 3}
   - {fileID: 5992784833697721141, guid: be565c8cc0fa3da4bbe6254d27898077, type: 3}
-  skills:
-  - {fileID: 1141278706308778883, guid: 16e4ef0c44f0f9d42b6a3ed3cecab4d9, type: 3}
-  - {fileID: 149169671543887965, guid: 16e4ef0c44f0f9d42b6a3ed3cecab4d9, type: 3}
-  - {fileID: 5231741850862617204, guid: 16e4ef0c44f0f9d42b6a3ed3cecab4d9, type: 3}
   AttackBooster: 2
   CriticalChance: 30
   attackPos:

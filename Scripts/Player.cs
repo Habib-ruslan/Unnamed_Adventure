@@ -40,16 +40,16 @@ public abstract class Player : MonoBehaviour
     protected Animator anim;
     public Animation _attack; 
     public Sprite _sprite;
+    public string MyClass;
 
     [Header("UI")]
     public Text money_Txt;
     protected Image hp_Im;
     protected GameObject cam;
     public GameObject[] UI_Message;
-    protected Image Avatar;
-    protected Image[] Skills = {null, null, null}; 
-    public Sprite[] skills;
-    protected UI_Eff[] skill = {null, null, null};
+    protected GameObject Inventory;
+    protected GameObject Hud;
+    protected HUD hd;
 
     void FixedUpdate()
     {
@@ -132,35 +132,57 @@ public abstract class Player : MonoBehaviour
     }
     protected void Find()
     {
+        //Для режима разработки
+        PlayerPrefs.SetString("Hero_Class", MyClass);
+        print("Ваш класс: " + PlayerPrefs.GetString("Hero_Class"));
+        
+        Inventory = GameObject.Find("Canvas/Инвентарь");
+        cam = GameObject.FindGameObjectWithTag("MainCamera");
+        Hud = GameObject.Find("Canvas/HUD");
+        hd = Hud.GetComponent<HUD>();
+
         eff_img[0] = GameObject.Find("Canvas/Эффекты/Effect").GetComponent<Image>();
         eff_img[1] = GameObject.Find("Canvas/Эффекты/Effect 2").GetComponent<Image>();
         eff_img[2] = GameObject.Find("Canvas/Эффекты/Effect 3").GetComponent<Image>();
         eff_img[3] = GameObject.Find("Canvas/Эффекты/Effect 4").GetComponent<Image>();
         eff_img[4] = GameObject.Find("Canvas/Эффекты/Effect 5").GetComponent<Image>();
-        cam = GameObject.FindGameObjectWithTag("MainCamera");
+
         money_Txt = GameObject.FindGameObjectWithTag("UI_Mon").GetComponent<Text>();
         hp_Im = GameObject.FindGameObjectWithTag("UI_HP").GetComponent<Image>();
-        Avatar = GameObject.FindGameObjectWithTag("UI_Ava 1").GetComponent<Image>();
-        Avatar.sprite = _sprite;
-        Skills[0] = GameObject.Find("Canvas/Skills/First").GetComponent<Image>();
-        Skills[1] = GameObject.Find("Canvas/Skills/Second").GetComponent<Image>();
-        Skills[2] = GameObject.Find("Canvas/Skills/Third").GetComponent<Image>();
-        for (int i = 0; i < 3; i++)
-        {
-            Skills[i].sprite = skills[i];
-            skill[i] = Skills[i].GetComponentInChildren<UI_Eff>();
-            skill[i].image.sprite = skills[i];
-        }
-        skill[0].Timer = Skill_Time[0];
-        skill[1].Timer = Skill_Time[1];
+
     }
     public virtual void KnockBack(float OtherPow, float OtherTime, float Other_Damage, bool AttackOn)
     {
         rb.velocity = Vector2.up*OtherPow;
         OtherDamage(Other_Damage, AttackOn);
     }
+    void OnTriggerStay2D(Collider2D col)
+    {
+        if(col.tag == "NPC")
+        {
+            if (Input.GetKey(KeyCode.T))
+            {
+                col.GetComponent<NPCs>().Dialog();
+            }
+            else if(Input.GetKey(KeyCode.Backspace))
+            {
+                col.GetComponent<NPCs>().ExitDialog();
+            }
+        }
+    }
+    void OnTriggerExit2D(Collider2D col)
+    {
+        if(col.tag == "NPC")
+        {
+            col.GetComponent<NPCs>().ExitDialog();
+            col.GetComponent<NPCs>().ShopExit();
+        }
+    }
 
+    public virtual void Equip(int num)
+    {
 
+    }
     //Система эффектов
     #region EffectSystem
     public virtual void Effects(string type, float power,float time_, float _time)

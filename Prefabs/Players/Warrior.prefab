@@ -185,7 +185,7 @@ CircleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.04, y: -2.15}
+  m_Offset: {x: 0.04, y: -2.09}
   serializedVersion: 2
   m_Radius: 0.5
 --- !u!95 &4467746368187146254
@@ -255,13 +255,10 @@ MonoBehaviour:
   _attack: {fileID: 0}
   _sprite: {fileID: -4109347719498768218, guid: 81b9fdf80c35a3a48aa062eb4665b693,
     type: 3}
+  MyClass: Voin
   money_Txt: {fileID: 0}
   UI_Message:
   - {fileID: 1126118824715314684, guid: 0716f5fe998a8a24c94452520f76a4a1, type: 3}
-  skills:
-  - {fileID: 1783406103121689048, guid: 16e4ef0c44f0f9d42b6a3ed3cecab4d9, type: 3}
-  - {fileID: -2779946603847204376, guid: 16e4ef0c44f0f9d42b6a3ed3cecab4d9, type: 3}
-  - {fileID: 3243529810081344101, guid: 16e4ef0c44f0f9d42b6a3ed3cecab4d9, type: 3}
   Target:
   - serializedVersion: 2
     m_Bits: 512
@@ -272,19 +269,16 @@ MonoBehaviour:
   attackPos:
   - {fileID: 4467746369289068238}
   skins:
-  - {fileID: -8809796796497569374, guid: 022b328b2cd4a9e48bd3a14373cfef31, type: 3}
-  - {fileID: -8922070678337290362, guid: 022b328b2cd4a9e48bd3a14373cfef31, type: 3}
-  - {fileID: 7330523401044445230, guid: 022b328b2cd4a9e48bd3a14373cfef31, type: 3}
-  - {fileID: -7209455519451000422, guid: 022b328b2cd4a9e48bd3a14373cfef31, type: 3}
-  - {fileID: 7318678154923921081, guid: 022b328b2cd4a9e48bd3a14373cfef31, type: 3}
-  - {fileID: -8728117672052996213, guid: 022b328b2cd4a9e48bd3a14373cfef31, type: 3}
-  - {fileID: -8209974431563887243, guid: 022b328b2cd4a9e48bd3a14373cfef31, type: 3}
-  - {fileID: 8661716769726213575, guid: 022b328b2cd4a9e48bd3a14373cfef31, type: 3}
-  - {fileID: -3744119735063215311, guid: 022b328b2cd4a9e48bd3a14373cfef31, type: 3}
-  - {fileID: -2489345345109454675, guid: 022b328b2cd4a9e48bd3a14373cfef31, type: 3}
-  - {fileID: -1863815478596214627, guid: 022b328b2cd4a9e48bd3a14373cfef31, type: 3}
-  - {fileID: -5185324025073595502, guid: 022b328b2cd4a9e48bd3a14373cfef31, type: 3}
-  - {fileID: 6847577532426401586, guid: 022b328b2cd4a9e48bd3a14373cfef31, type: 3}
+  - {fileID: 4466075520389047098, guid: ee8bde7b2ade6d04abce9c31782031ff, type: 3}
+  - {fileID: 8699520011652731723, guid: ee8bde7b2ade6d04abce9c31782031ff, type: 3}
+  - {fileID: -2727779635498808029, guid: ee8bde7b2ade6d04abce9c31782031ff, type: 3}
+  - {fileID: -6422091519726480010, guid: ee8bde7b2ade6d04abce9c31782031ff, type: 3}
+  - {fileID: -1813275145694445586, guid: ee8bde7b2ade6d04abce9c31782031ff, type: 3}
+  - {fileID: 7912829101927717366, guid: ee8bde7b2ade6d04abce9c31782031ff, type: 3}
+  - {fileID: -6287421859269913266, guid: ee8bde7b2ade6d04abce9c31782031ff, type: 3}
+  - {fileID: 3757418934992770125, guid: ee8bde7b2ade6d04abce9c31782031ff, type: 3}
+  - {fileID: 4460759503651372780, guid: ee8bde7b2ade6d04abce9c31782031ff, type: 3}
+  - {fileID: -4450092506285168466, guid: ee8bde7b2ade6d04abce9c31782031ff, type: 3}
   sword: {fileID: 4467746368041383680}
   damageParticale: {fileID: 5836960995553926790, guid: afa27f66436ee1244acffb367c8e7c59,
     type: 3}
