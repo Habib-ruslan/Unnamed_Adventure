@@ -6,7 +6,7 @@ public class Particle : MonoBehaviour
 {
     public float deathTime;
     public GameObject self;
-    void Start()
+    private void Start()
     {
         Destroy(self, deathTime);
     }

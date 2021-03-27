@@ -7,12 +7,12 @@ public class Saver : MonoBehaviour
 {
     public int mon;
     public Text M;
-    void Start()
+    private void Start()
     {
         mon = PlayerPrefs.GetInt("Money");
 
     }
-    void Update()
+    private void Update()
     {
         M.text = mon.ToString();
     }

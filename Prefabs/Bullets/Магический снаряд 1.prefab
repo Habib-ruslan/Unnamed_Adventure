@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 8256840197787726271}
   - component: {fileID: 8256840197787726240}
   - component: {fileID: 8256840197787726241}
+  - component: {fileID: 2319640691845401624}
   m_Layer: 0
   m_Name: "\u041C\u0430\u0433\u0438\u0447\u0435\u0441\u043A\u0438\u0439 \u0441\u043D\u0430\u0440\u044F\u0434
     1"
@@ -101,7 +102,7 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 0.10500001
+  m_Radius: 0.51
 --- !u!114 &8256840197787726241
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -115,7 +116,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 80
-  Enemy_sBullet: 0
+  isEnemyBullet: 0
   damage: 2
   damage_crit: 2
   self: {fileID: 8256840197787726242}
@@ -124,6 +125,28 @@ MonoBehaviour:
   radius: 0
   target:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 5632
   damageParticale: {fileID: 2225962328457815319, guid: beb795e14d3fbc7419e90ab114c91479,
     type: 3}
+  rayDistance: 0
+--- !u!50 &2319640691845401624
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8256840197787726242}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 1
+  m_Constraints: 0

@@ -3,25 +3,25 @@ using System.Collections.Generic;
 using UnityEngine;
 
 struct weapons
+{
+    public float damage, Radius, CriticalChance, CriticalDamage, AttackSpeed;
+    public int MaxDamage;
+    public weapons(float damage, float Radius, float CriticalChance, float CriticalDamage, float AttackSpeed, int MaxDamage)
     {
-        public float damage, Radius, CriticalChance, CriticalDamage, AttackSpeed;
-        public int MaxDamage;
-        public weapons(float damage, float Radius, float CriticalChance, float CriticalDamage, float AttackSpeed, int MaxDamage)
-        {
-            this.damage = damage;
-            this.Radius = Radius;
-            this.CriticalChance = CriticalChance;
-            this.CriticalDamage = CriticalDamage;
-            this.AttackSpeed = AttackSpeed;
-            this.MaxDamage = MaxDamage;
+        this.damage = damage;
+        this.Radius = Radius;
+        this.CriticalChance = CriticalChance;
+        this.CriticalDamage = CriticalDamage;
+        this.AttackSpeed = AttackSpeed;
+        this.MaxDamage = MaxDamage;
 
-        }
     }
+}
 public class Warrior : Player
 {
-    string UnlockWeapons;
-    int EquipWeapon;
-    public LayerMask[] Target;
+    private string UnlockWeapons;
+    private int EquipWeapon;
+    public LayerMask target;
     public Transform[] attackPos;
     protected float damage;
     public Sprite[] skins;
@@ -35,10 +35,14 @@ public class Warrior : Player
     bool spurt_;
     public float spurt_forward;
 
-    weapons[] Weapons;
+    private delegate void skill();
+    private skill moveSkill;
 
-    void Awake()
+    private weapons[] Weapons;
+
+    private void Awake()
     {
+        moveSkill = Shift;
         PlayerPrefs.SetString("UnlockWeapons","10000");
         PlayerPrefs.SetInt("Equip", 0);
         UnlockWeapons = PlayerPrefs.GetString("UnlockWeapons");
@@ -54,7 +58,7 @@ public class Warrior : Player
             new weapons(3f, 3.2f, 8f, 2.2f, 1.4f, 6)
         };
     } 
-    void Start()
+    private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
@@ -64,12 +68,12 @@ public class Warrior : Player
         hd.EditTime(1, Skill_Time[1]);
     }
 
-    void Update()
+    private void Update()
     {
         if(!Stun)
         {
             Jump();
-            Run();
+            Move();
             if (Input.GetKey(KeyCode.X))
             {
                 anim.SetBool("Attack", true);
@@ -78,7 +82,7 @@ public class Warrior : Player
             {
                 PlayerPrefs.SetString("UnlockWeapons", "10000");
             }
-            else if(Input.GetKeyDown(KeyCode.I))
+            else if(Input.GetButtonDown("Inventory"))
             {
                 Inventory.GetComponent<GUI>().Active();
             }
@@ -92,9 +96,9 @@ public class Warrior : Player
             anim.SetBool("OnAir", false);
         }
     }
-    void FixedUpdate()
+    private void FixedUpdate()
     {
-        OnGround = Physics2D.OverlapCircle(groundCheck.position, checkRadius, whatIsGround);
+        OnGround = Physics2D.OverlapBox(groundCheck.position, checkSize, 0f,whatIsGround);
         if (anim.GetBool("run") && !stay)
         {
             if (hp+regen <= Maxhp)
@@ -104,16 +108,20 @@ public class Warrior : Player
             }
         }
     }
-    protected override void Run()
+    private void Shift()
+    {
+        hd.SetZero(1);
+        rb.velocity = new Vector2(spurt_forward *Input.GetAxis("Horizontal"), rb.velocity.y);
+        StartCoroutine(Spurt_Forward());
+    } 
+    protected override void Move()
     {
         float moveX=Input.GetAxis ("Horizontal");
         if (moveX !=0)
         {
             if(Input.GetKey(KeyCode.LeftShift) && Spurt_Ready)
             {
-                hd.Zero(1);
-                rb.velocity = new Vector2(spurt_forward *Input.GetAxis("Horizontal"), rb.velocity.y);
-                StartCoroutine(Spurt_Forward());
+                moveSkill();
             }
             else
             {
@@ -123,52 +131,44 @@ public class Warrior : Player
             if ((!Right && moveX > 0) || (Right && moveX < 0)) Flip();
         }
         else anim.SetBool("run", false);
-        cam.transform.position = new Vector3(transform.position.x, transform.position.y, -10f);
+        cam.transform.position = new Vector3(transform.position.x, transform.position.y, -20f);
     }
-    void Attack()
+    protected override void Attack()
     {
-        hd.Zero(0);
+        hd.SetZero(0);
         if (Random.Range(0,100) <= Weapons[n].CriticalChance)  {damage = Weapons[n].damage * Weapons[n].CriticalDamage +Random.Range(0,Weapons[n].MaxDamage);}
         else damage = Weapons[n].damage + Random.Range(0, Weapons[n].MaxDamage);
-        Collider2D[] en = Physics2D.OverlapCircleAll(attackPos[0].position, Weapons[n].Radius, Target[0]);
-        Collider2D[] box = Physics2D.OverlapCircleAll(attackPos[0].position, Weapons[n].Radius, Target[1]);
-        Collider2D[] bomb = Physics2D.OverlapCircleAll(attackPos[0].position, Weapons[n].Radius, Target[2]);
-        for (int i=0; i<en.Length; i++)
+        Collider2D[] obj = Physics2D.OverlapCircleAll(attackPos[0].position, Weapons[n].Radius, target);
+        for (int i=0; i<obj.Length; i++)
         {
-            en[i].GetComponent<Mob>().TakeDamage(damage, damageParticale);
-        }
-        for (int i = 0; i < box.Length; i++)
-        {
-            box[i].GetComponent<Boxes>().DestroyOther();
-        }
-        for (int i = 0; i < bomb.Length; i++)
-        {
-            bomb[i].GetComponent<Bombs>().Boom();
+            obj[i].GetComponent<Entity>().TakeDamage(damage, damageParticale);
         }
         anim.SetBool("Attack", false);
     }
-    void OnDrawGizmosSelected()
+
+    private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(attackPos[0].position , AttackRadius);
         Gizmos.color = Color.blue;
-        Gizmos.DrawWireSphere(groundCheck.position, checkRadius);
+        Gizmos.DrawWireCube(groundCheck.position, checkSize);
     }
-    void OnCollisionStay2D(Collision2D col)
+    #region Collision/Collider
+    private void OnCollisionStay2D(Collision2D col)
     {
         if(col.gameObject.tag == "Wall" || col.gameObject.tag =="Enemy" || col.gameObject.tag == "Boxes")
         {
             stay = true;
         }
     }
-    void OnCollisionExit2D(Collision2D col)
+    private void OnCollisionExit2D(Collision2D col)
     {
         if(col.gameObject.tag == "Wall" || col.gameObject.tag =="Enemy" || col.gameObject.tag == "Boxes")
         {
             stay = false;
         }
     }
-
+    #endregion
     public override void Equip(int num)
     {
         n =(short) num;
@@ -176,6 +176,7 @@ public class Warrior : Player
         sword.GetComponent<SpriteRenderer>().sprite = skins[h];
     }
     
+
     IEnumerator Spurt_Forward()
     {
         yield return new WaitForSeconds(0.25f);

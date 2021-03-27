@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -23,12 +24,12 @@ public class GUI : MonoBehaviour
     public int[] cost;
     public string type;
 
-    string HeroClass;
-    Player player;
+    private string HeroClass;
+    private Player player;
 
-    int k;
-    string UW;
-    char[] _UW;
+    private int k;
+    private string UW;
+    private char[] _UW;
 
     void Start()
     {
@@ -66,11 +67,9 @@ public class GUI : MonoBehaviour
         PlayerPrefs.SetInt("Money", money);
         MoneyText.text = PlayerPrefs.GetInt("Money").ToString();
 
-        string UW = PlayerPrefs.GetString("UnlockWeapons");
-        char[] _UW = UW.ToCharArray(0, UW.Length);
-        _UW[num+1] = '1';
-        UW = new string(_UW);
-        PlayerPrefs.SetString("UnlockWeapons", UW);
+        StringBuilder UW = new StringBuilder(PlayerPrefs.GetString("UnlockWeapons"), PlayerPrefs.GetString("UnlockWeapons").Length);
+        UW.Replace('0','1', num+1,1);
+        PlayerPrefs.SetString("UnlockWeapons", UW.ToString());
 
         //
         print(PlayerPrefs.GetString("UnlockWeapons"));

@@ -125,11 +125,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   count: 0
-  type: stun
   power: 0
   time: 0
   time2: 5
   Self: {fileID: 2888506797130798841}
+  type: 3
 --- !u!95 &2888506796513343895
 Animator:
   serializedVersion: 3

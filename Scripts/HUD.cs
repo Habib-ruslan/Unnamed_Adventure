@@ -16,10 +16,10 @@ public class HUD : MonoBehaviour
     public Sprite[] skillsWarrior;
     public Sprite[] skillsWizard;
     public Sprite[] skillsTank;
-    List<Sprite[]> skills;
-    UI_Eff[] _Skills;
+    private List<Sprite[]> skills;
+    private UI_Eff[] _Skills;
 
-    int k;
+    private int k;
 
 
     void Awake()
@@ -46,7 +46,7 @@ public class HUD : MonoBehaviour
         }
 
     }
-    public void Zero(int num)
+    public void SetZero(int num)
     {
         _Skills[num].image.fillAmount = 0;
     }
@@ -57,6 +57,12 @@ public class HUD : MonoBehaviour
     public void EditColor(int num, Color col)
     {
         _Skills[num].image.color = col;
+    }
+    public bool isReady(int num)
+    {
+        if(_Skills[num].image.fillAmount == 1)
+            return true;
+        else return false;
     }
 
 }

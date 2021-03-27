@@ -11,13 +11,19 @@ public class Wizard : Player
     public Sprite[] skins;
     public GameObject stick;
 
-    int EquipWeapon;
-    string UnlockWeapons;
-    short k;
+    private int EquipWeapon;
+    private string UnlockWeapons;
+    private short k;
 
-    void Awake()
+    private delegate void Skill();
+    Skill first;
+    Skill second;
+
+    private void Awake()
     {
         Find();
+        first = magicBulletShot;
+        second = heavyBulletShot;
         PlayerPrefs.SetString("UnlockWeapons","11");
         PlayerPrefs.SetInt("Equip", 0);
         UnlockWeapons = PlayerPrefs.GetString("UnlockWeapons");
@@ -27,51 +33,37 @@ public class Wizard : Player
 
     }
 
-    void Start()
+    private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
+        anim.SetFloat("speed", 1f);
         hp = Maxhp;
         hd.EditTime(2, 1f);
         hd.EditTime(0, Skill_Time[0]);
         hd.EditTime(1, Skill_Time[1]);
     }
 
-    void Update()
+    private void Update()
     {
         if (!Stun)
         {
             Jump();
-            Run();
-            if (Input.GetKey(KeyCode.X) || Input.GetKey(KeyCode.C) || Input.GetKey(KeyCode.V))
+            Move();
+            if ((Input.GetButton("Fire1") || Input.GetButton("Fire2") || Input.GetButton("Fire3")) && hd.isReady(0))
             {
-
-                anim.SetBool("Attack", true);
-                if (Input.GetKey(KeyCode.X))
-                {
-                    k = 0;
-                    anim.SetFloat("speed", 1f);
-                    hd.EditTime(0, 1f);
-                }
-                else if(Input.GetKey(KeyCode.C))
-                {
-                    k = 1;
-                    anim.SetFloat("speed", 2f);
-                    hd.EditTime(0, 0.5f);
-                }
-                else if(Input.GetKey(KeyCode.V))
-                {
-                    k = 2;
-                    anim.SetFloat("speed", 0.75f);
-                    hd.EditTime(2, 1.35f);
-                }
+                first();
+            }
+            else if(Input.GetButton("Fire4") && hd.isReady(1))
+            {
+                second();
             }
 
             else if(Input.GetKeyDown(KeyCode.R))
-                {
-                    PlayerPrefs.SetString("UnlockWeapons", "10");
-                }
-            else if(Input.GetKeyDown(KeyCode.I))
+            {
+                PlayerPrefs.SetString("UnlockWeapons", "10");
+            }
+            else if(Input.GetButtonDown("Inventory"))
             {
                 Inventory.GetComponent<GUI>().Active();
             }
@@ -84,9 +76,39 @@ public class Wizard : Player
         }
         
     }
-    public void Attack()
+    private void FixedUpdate()
     {
-        hd.Zero(0);
+        OnGround = Physics2D.OverlapBox(groundCheck.position, checkSize, 0f, whatIsGround);
+    }
+    private void magicBulletShot()
+    {
+        anim.SetBool("Attack", true);
+        if(Input.GetButton("Fire1"))
+        {
+            k = 0;
+            anim.SetFloat("speed", 1f);
+            hd.EditTime(0, 1f);
+        }
+        else if (Input.GetButton("Fire2"))
+        {
+            k = 1;
+            anim.SetFloat("speed", 2f);
+            hd.EditTime(0, 0.5f); 
+        }
+        else
+        {
+            k = 2;
+            anim.SetFloat("speed", 0.75f);
+            hd.EditTime(0, 1.35f);
+        }
+    }
+    private void heavyBulletShot()
+    {
+        anim.SetBool("HeavyAttack", true);
+    }
+    public void AnimAttack()
+    {
+        hd.SetZero(0);
         if(transform.localScale.x<0)
         {
             Offset.z +=180f;
@@ -99,9 +121,29 @@ public class Wizard : Player
         }
         anim.SetBool("Attack", false);
     }
+    public void AnimHeavyAttack()
+    {
+        hd.SetZero(1);
+        if(transform.localScale.x<0)
+        {
+            Offset.z +=180f;
+            Instantiate(MagicBullet[3], AttackPoint.position, Offset);
+            Offset.z-=180f;
+        }
+        else
+        {
+            Instantiate(MagicBullet[3], AttackPoint.position, Offset);
+        }
+        anim.SetBool("HeavyAttack", false);
+    }
     public override void Equip(int num)
     {
         int h = (num !=0)? 6 * num : 0;
         stick.GetComponent<SpriteRenderer>().sprite = skins[h];
+    }
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.blue;
+        Gizmos.DrawWireCube(groundCheck.position, checkSize);
     }
 }

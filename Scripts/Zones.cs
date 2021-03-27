@@ -4,38 +4,26 @@ using UnityEngine;
 
 public class Zones : MonoBehaviour
 {
-    public bool Right;
-    public bool Agr;
-    public GameObject otherZone;
-    private Zones zn;
-    public GameObject enemy;
-    private Mob mob;
+    public string Target;
+    public int num;
+
+    public GameObject mob;
+    private Enemy en;
+
+
     void Start()
     {
-        mob = enemy.GetComponent<Mob>();
-        zn = otherZone.GetComponent<Zones>();
+        en = mob.GetComponent<Enemy>();
     }
 
-    void OnTriggerEnter2D(Collider2D col)
+    private void OnTriggerStay2D(Collider2D col)
     {
-        if (col.tag =="Player")
-        {
-            mob.Agr = Agr = true;
-            zn.Agr = false; 
-            if (mob.Right !=Right)
-            { 
-                Right=!Right;
-                zn.Right = !zn.Right;
-                mob.Flip();
-            }
-        }
+        if(col.tag==Target) en.isTrue(num, true);
     }
-    void OnTriggerExit2D(Collider2D col)
+    private void OnTriggerExit2D(Collider2D col)
     {
-        if (col.tag =="Player")
-        {
-            Agr = false;
-            if (!zn.Agr) {mob.Agr = false;}
-        }
+        if(col.tag==Target) en.isTrue(num, false);
     }
+
+    
 }

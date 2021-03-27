@@ -11,7 +11,7 @@ public class UI_Damage : MonoBehaviour
     private TextMesh text;
     public GameObject Self;
 
-    void Start()
+    private void Start()
     {
         text = GetComponent<TextMesh>();
         text.color = color;
@@ -23,5 +23,5 @@ public class UI_Damage : MonoBehaviour
             default: break; 
         }
     }
-    void Dstr() {Destroy(Self);}
+    private void Dstr() {Destroy(Self);}
 }

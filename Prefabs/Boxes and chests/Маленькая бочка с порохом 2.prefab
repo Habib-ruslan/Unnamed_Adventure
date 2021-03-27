@@ -147,12 +147,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   self: {fileID: 1079942099470241658}
+  damageParticale: {fileID: 0}
   radius: 3.94
   radius2: 1.36
   damage: 2
-  damage2: 5
+  scatter: 0
   target:
-  - serializedVersion: 2
-    m_Bits: 512
-  - serializedVersion: 2
-    m_Bits: 2048
+    serializedVersion: 2
+    m_Bits: 7680

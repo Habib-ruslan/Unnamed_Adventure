@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public abstract class Player : MonoBehaviour
+
+public abstract class Player : Entity
 {
     //Основные переменные
     [Header("Передвижение")] 
@@ -15,20 +16,20 @@ public abstract class Player : MonoBehaviour
     protected bool Right = true;    //Поворот игрока
     public bool OnGround;             //Игрок на земле?
     public Transform groundCheck;       //Проверка слоя земли
-    public float checkRadius;           //Радиус проверки слоя земли
     public short MaxJumps;           //Максимальное кол-во прыжков
     protected bool CanJump = true;        //Доступны ли прыжки сейчас?
+    public Vector2 checkSize;
 
     [Header("Боевая система")]
     protected float hp;
     public float Damage;
     public float Maxhp;
     public GameObject self;
-    public bool Invuln; 
+    protected bool Invuln; 
     public float timer;
     public bool Stun;
     public float[] Skill_Time;
-
+    [Header("Система эффектов")]
     public Sprite[] eff_ico;
     public Image[] eff_img;
     public int[] _effects = {0, 0, 0, 0, 0};
@@ -51,15 +52,6 @@ public abstract class Player : MonoBehaviour
     protected GameObject Hud;
     protected HUD hd;
 
-    void FixedUpdate()
-    {
-        OnGround = Physics2D.OverlapCircle(groundCheck.position, checkRadius, whatIsGround);
-    }
-    void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.blue;
-        Gizmos.DrawWireSphere(groundCheck.position, checkRadius);
-    }
     //Функция поворота персонажа
     protected void Flip() {
         Right = !Right;
@@ -67,13 +59,14 @@ public abstract class Player : MonoBehaviour
         Scaler.x *= -1;
         transform.localScale = Scaler;
     }
+
     //Прыжки
     protected virtual void Jump()
     {
         if (OnGround) JumpCount = MaxJumps;
         if (CanJump)
         {
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (Input.GetButtonDown("Jump"))
             {
                 if (JumpCount > 0)
                 {
@@ -84,7 +77,7 @@ public abstract class Player : MonoBehaviour
         }
     }
     //Передвижение по х
-    protected virtual void Run()
+    protected virtual void Move()
     {
         float moveX=Input.GetAxis ("Horizontal");
         if (moveX !=0)
@@ -94,11 +87,15 @@ public abstract class Player : MonoBehaviour
             if ((!Right && moveX > 0) || (Right && moveX < 0)) Flip();
         }
         else anim.SetBool("run", false);
-        cam.transform.position = new Vector3(transform.position.x, transform.position.y, -10f);
+        cam.transform.position = new Vector3(transform.position.x, transform.position.y + 5f, -20f);
     }
-    public virtual void OtherDamage(float damage, bool AttackOn)
+    protected virtual void Attack()
     {
-        short block =(short) Random.Range(0, 100);
+
+    }
+    public override void TakeDamage(float damage, bool AttackOn)
+    {
+        short block =(short) Random.Range(1, 100);
         if (AttackOn)
         {
             if (block > BlockChance)
@@ -120,7 +117,12 @@ public abstract class Player : MonoBehaviour
         }
 
     }
-    IEnumerator _Invuln()
+    public override void TakeDamage(float damage, GameObject particle)
+    {
+        TakeDamage(damage, true);
+    }
+
+    protected IEnumerator _Invuln()
     {
         Invuln = true;
         yield return new WaitForSeconds(timer);
@@ -151,12 +153,16 @@ public abstract class Player : MonoBehaviour
         hp_Im = GameObject.FindGameObjectWithTag("UI_HP").GetComponent<Image>();
 
     }
-    public virtual void KnockBack(float OtherPow, float OtherTime, float Other_Damage, bool AttackOn)
+    public override void GetKnockback(float OtherPow, float OtherTime, float Other_Damage, bool AttackOn)
     {
         rb.velocity = Vector2.up*OtherPow;
-        OtherDamage(Other_Damage, AttackOn);
+        TakeDamage(Other_Damage, AttackOn);
     }
-    void OnTriggerStay2D(Collider2D col)
+    public override void GetKnockback(float OtherPow, float OtherKnockTime, float OtherDamage, GameObject particale)
+    {
+        GetKnockback(OtherPow, OtherKnockTime, OtherDamage, true);
+    }
+    private void OnTriggerStay2D(Collider2D col)
     {
         if(col.tag == "NPC")
         {
@@ -170,7 +176,7 @@ public abstract class Player : MonoBehaviour
             }
         }
     }
-    void OnTriggerExit2D(Collider2D col)
+    private void OnTriggerExit2D(Collider2D col)
     {
         if(col.tag == "NPC")
         {
@@ -185,12 +191,12 @@ public abstract class Player : MonoBehaviour
     }
     //Система эффектов
     #region EffectSystem
-    public virtual void Effects(string type, float power,float time_, float _time)
+    public virtual void Effects(int type, float power,float time_, float _time)
     {
         StartCoroutine(Effects_Cor(type, power, time_, _time));
     }
 
-    int Eff_FreeSlot()
+    private int Eff_FreeSlot()
     {
         int maxFree = 0;
         for (int i=0; i< 5; i++)
@@ -199,7 +205,7 @@ public abstract class Player : MonoBehaviour
         }
         return maxFree+1;
     }
-    void Eff_ReloadOrFind(int num, float time_)
+    private void Eff_ReloadOrFind(int num, float time_)
     {
         if (_effects[num] !=0)
         {
@@ -213,7 +219,7 @@ public abstract class Player : MonoBehaviour
             eff_img[_effects[num]-1].gameObject.SetActive(true);
         }
     }
-    void Eff_Null(int num)
+    private void Eff_Null(int num)
     {
         if (eff_img[_effects[num]-1].fillAmount <= 0)
         {
@@ -234,11 +240,11 @@ public abstract class Player : MonoBehaviour
         }
     }
 
-    IEnumerator Effects_Cor(string type, float power,float _time, float time_)
+    private IEnumerator Effects_Cor(int type, float power,float _time, float time_)
     {
         switch(type)
         {
-            case "regen":
+            case 1:
                 int num = power < 0 ?  0 : 3;
                 Eff_ReloadOrFind(num, time_);
                 for (int i=0; i<time_/_time; i++)
@@ -250,7 +256,7 @@ public abstract class Player : MonoBehaviour
                 Eff_Null(num);
                 break;
 
-            case "stun":
+            case 3:
                 num = 1;
                 Eff_ReloadOrFind(num, time_);
                 Stun = true;
@@ -259,7 +265,7 @@ public abstract class Player : MonoBehaviour
                 Eff_Null(num);
                 break;
 
-            case "speed":
+            case 2:
                 num = power > 1 ?  2: 4;
                 speed *= power;
                 Eff_ReloadOrFind(num, time_);

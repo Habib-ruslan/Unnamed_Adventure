@@ -4,20 +4,28 @@ using UnityEngine;
 
 public class PutBonus : MonoBehaviour
 {
-    //Переменные
     public int count;
-    public string type;
-    public float power;
+    public float power; //for effect
     public float time;
     public float time2;
     public GameObject Self;
     private Animator anim;
+    [HideInInspector]
+    public enum Type
+    {
+        money,
+        regen,
+        speed,
+        stun,
+        other
+    };
+    public Type type;
 
-    void Start()
+    private void Awake()
     {
         anim = GetComponent<Animator>();
     }
-    void OnTriggerEnter2D(Collider2D col)
+    private void OnTriggerEnter2D(Collider2D col)
     {
         if(!anim.GetBool("put"))
         {
@@ -25,14 +33,14 @@ public class PutBonus : MonoBehaviour
             {
                 anim.SetBool("put", true);
                 Player pl = col.GetComponent<Player>();
-                switch (type)
+                switch ((int)type)
                 {
-                    case "money":
+                    case 0:
                         pl.money+=count;
                         pl.money_Txt.text = pl.money.ToString();
                         break;
                     default:
-                        pl.Effects(type, power, time, time2);
+                        pl.Effects((int)type, power, time, time2);
                         break;
                 }
                 

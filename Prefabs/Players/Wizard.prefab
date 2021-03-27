@@ -107,7 +107,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8232533046160651513}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.27, y: -0.55, z: 0}
+  m_LocalPosition: {x: 0.3, y: -0.55, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8232533047407225593}
@@ -601,17 +601,16 @@ MonoBehaviour:
     m_Bits: 1280
   OnGround: 0
   groundCheck: {fileID: 8232533046160651512}
-  checkRadius: 0.7
   MaxJumps: 1
+  checkSize: {x: 0.69, y: 0.52}
   Damage: 1
-  Maxhp: 20
+  Maxhp: 200
   self: {fileID: 8232533047407225598}
-  Invuln: 0
   timer: 0
   Stun: 0
   Skill_Time:
   - 1
-  - 1
+  - 2
   eff_ico:
   - {fileID: 4490252676889712094, guid: aa10e27b5c748f642942d92eceffd424, type: 3}
   - {fileID: -2798344749691830334, guid: aa10e27b5c748f642942d92eceffd424, type: 3}
@@ -638,6 +637,7 @@ MonoBehaviour:
   - {fileID: 8256840197787726242, guid: ea4c346772e458f49b21548e550d6567, type: 3}
   - {fileID: 6506786478206709137, guid: a6559d99c3f2c5c4b8a22a8b43e91993, type: 3}
   - {fileID: 7922208989358809356, guid: a4881fa83b378c143a0aad00a772ed08, type: 3}
+  - {fileID: 579619020172423941, guid: 7f78035e3f6f4dd46bbb23c6acf86227, type: 3}
   AttackPoint: {fileID: 8232533046862221176}
   Offset: {x: 0, y: 0, z: 0, w: 0}
   skins:

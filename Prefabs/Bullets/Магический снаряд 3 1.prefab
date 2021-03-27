@@ -102,7 +102,7 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 0.10500001
+  m_Radius: 0.43
 --- !u!114 &7922208989358809359
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -116,7 +116,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 30
-  Enemy_sBullet: 0
+  isEnemyBullet: 0
   damage: 2
   damage_crit: 2
   self: {fileID: 7922208989358809356}
@@ -125,9 +125,10 @@ MonoBehaviour:
   radius: 3.91
   target:
     serializedVersion: 2
-    m_Bits: 512
+    m_Bits: 5632
   damageParticale: {fileID: 2225962328457815319, guid: beb795e14d3fbc7419e90ab114c91479,
     type: 3}
+  rayDistance: 0
 --- !u!50 &1099824153291569860
 Rigidbody2D:
   serializedVersion: 4

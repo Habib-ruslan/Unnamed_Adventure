@@ -149,11 +149,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   count: 1
-  type: money
   power: 0
   time: 0
   time2: 0
   Self: {fileID: 3012607113780971046}
+  type: 0
 --- !u!58 &7215953421453362738
 CircleCollider2D:
   m_ObjectHideFlags: 0

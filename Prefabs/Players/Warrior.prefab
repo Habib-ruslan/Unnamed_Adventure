@@ -226,12 +226,11 @@ MonoBehaviour:
     m_Bits: 1280
   OnGround: 0
   groundCheck: {fileID: 4467746369379953013}
-  checkRadius: 0.7
   MaxJumps: 1
+  checkSize: {x: 0.62, y: 0.49}
   Damage: 4
   Maxhp: 8
   self: {fileID: 4467746368187146255}
-  Invuln: 0
   timer: 0
   Stun: 0
   Skill_Time:
@@ -259,13 +258,9 @@ MonoBehaviour:
   money_Txt: {fileID: 0}
   UI_Message:
   - {fileID: 1126118824715314684, guid: 0716f5fe998a8a24c94452520f76a4a1, type: 3}
-  Target:
-  - serializedVersion: 2
-    m_Bits: 512
-  - serializedVersion: 2
-    m_Bits: 1024
-  - serializedVersion: 2
-    m_Bits: 4096
+  target:
+    serializedVersion: 2
+    m_Bits: 0
   attackPos:
   - {fileID: 4467746369289068238}
   skins:

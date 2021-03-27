@@ -6,8 +6,8 @@ public class SaveSystem : MonoBehaviour
 {   
     public string MyClass;
     public GameObject obj;
-    public int money = 0;
-    void Start()
+    private int money = 0;
+    private void Start()
     {
         if (!PlayerPrefs.HasKey("Hero_Class"))
         {

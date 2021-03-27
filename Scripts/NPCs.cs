@@ -7,44 +7,55 @@ public class NPCs : MonoBehaviour
 {
     public GameObject particles;
     public Transform point;
-    GameObject DialogWindow;
-    GameObject ShopUI;
-    string HeroClass;
-    void Awake()
+    private GameObject dialogWindow;
+    private GameObject ShopUI;
+    private Text dialogText;
+    private string HeroClass;
+    public string[] text;
+    public string[] bye;
+
+
+    private void Awake()
     {
         ShopUI = GameObject.Find("Canvas/Shop");
-        DialogWindow = GameObject.Find("Canvas/Dialog");
-        DialogWindow.SetActive(false);
+        dialogWindow = GameObject.Find("Canvas/Dialog");
+        dialogText = dialogWindow.GetComponentInChildren<Text>();
+        dialogText.text = text[0];
+        dialogWindow.SetActive(false);
     }
-    void Start()
+    private void Start()
     {
         HeroClass = PlayerPrefs.GetString("Hero_Class");
     }
 
-    void Update()
+    private void Update()
     {
         
     }
-    public virtual void Particles()
+    protected virtual void Particles()
     {
         Instantiate(particles, point.position, Quaternion.identity);
     }
     public virtual void Dialog()
     {
-        DialogWindow.SetActive(true);
+        dialogWindow.SetActive(true);
     }
     public virtual void ExitDialog()
     {
-        DialogWindow.SetActive(false);
+        dialogWindow.SetActive(false);
     }
     public void Shop()
     {
         ShopUI.GetComponent<GUI>().Open();
-        DialogWindow.SetActive(false);
+        dialogWindow.SetActive(false);
     }
     public void ShopExit()
     {
         ShopUI.GetComponent<GUI>().Close(false);
     }
-    
+    public void Bye()
+    {
+        int n = Random.Range(0,4);
+        dialogText.text = bye[n];
+    }
 }

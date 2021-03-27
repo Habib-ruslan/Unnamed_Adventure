@@ -5,19 +5,19 @@ using UnityEngine;
 public class AttackRange : MonoBehaviour
 {
     public GameObject enemy;
-    private Mob mb;
-    void Start()
+    private Enemy mb;
+    private void Start()
     {
-        mb = enemy.GetComponent<Mob>();
+        mb = enemy.GetComponent<Enemy>();
     }
-    void OnTriggerStay2D(Collider2D col)
+    private void OnTriggerStay2D(Collider2D col)
     {
         if (col.tag == "Player")
         {
             mb.AttackOn = true;
         }
     }
-    void OnTriggerExit2D(Collider2D col)
+    private void OnTriggerExit2D(Collider2D col)
     {
         if (col.tag == "Player")
         {

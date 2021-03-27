@@ -8,11 +8,11 @@ public class UI_Eff : MonoBehaviour
     public Image image;
     public float Timer;
     public string type;
-    void Update()
+    private void Update()
     {
         StartCoroutine(Amount());
     }
-    IEnumerator Amount()
+    private IEnumerator Amount()
     {
         if (type == "effect") 
         {

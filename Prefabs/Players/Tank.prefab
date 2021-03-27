@@ -788,12 +788,11 @@ MonoBehaviour:
     m_Bits: 1280
   OnGround: 0
   groundCheck: {fileID: 3555657573568513832}
-  checkRadius: 0.7
   MaxJumps: 1
+  checkSize: {x: 1.41, y: 0.69}
   Damage: 1
   Maxhp: 100
   self: {fileID: 3555657573305536090}
-  Invuln: 0
   timer: 0
   Stun: 0
   Skill_Time:
@@ -827,13 +826,9 @@ MonoBehaviour:
   - {fileID: 3555657572818180056}
   - {fileID: 3555657573568191827}
   attackRadius: 1.5
-  Target:
-  - serializedVersion: 2
-    m_Bits: 512
-  - serializedVersion: 2
-    m_Bits: 1024
-  - serializedVersion: 2
-    m_Bits: 4096
+  target:
+    serializedVersion: 2
+    m_Bits: 0
   damageParticale:
   - {fileID: 5836960995553926790, guid: afa27f66436ee1244acffb367c8e7c59, type: 3}
   - {fileID: 3951483217490553365, guid: a482aa64169214547a4a03b688890a88, type: 3}
